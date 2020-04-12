@@ -1,0 +1,72 @@
+//Arduino Fire Extingusing system
+
+#define BLYNK_PRINT Serial
+#include <ESP8266wiFi.h>
+#include <BlynkSimpleEsp8266.h>
+BlynkTimer timer;
+
+const int buzzerPin = 12;
+const int flamePin = 11;
+int Flame = HIGH;
+int redled = 6;
+int greenled = 5;
+int motorPin = 9;
+
+char auth[] = "L6xIDzcJ4yN2ws8j0E8Xi8sgmhrV8w-E"; //Auth code sent via Email
+char ssid[] = "nod mcu";                          //Wifi name
+char pass[] = "012345678";                        //Wifi Password
+int flag=0;
+
+void notifyOnFire()
+{
+  int sensor = digitalRead(D1);
+  if (sensor == 1 && flag == 0) 
+  {
+    Serial.println("Fire in your house");
+    Blynk.notify("Alert : Fire in your House");
+    flag=1;
+  }
+  else if (isButtonPressed==0)
+  {
+    flag=0;
+  }
+}
+void setup()
+{
+  pinMode(buzzerPin, OUTPUT);
+  pinMode(redled, OUTPUT);
+  pinMode(greenled, OUTPUT);
+  pinMode(motorPin, OUTPUT);
+  pinMode(flamePin, INPUT);
+
+  Serial.begin(9600);
+  Blynk.begin(auth, ssid, pass);
+  pinMode(D1,INPUT_PULLUP);
+  timer.setInterval(1000L,notifyOnFire); 
+}
+void loop()
+{
+  
+  Flame = digitalRead(flamePin);
+  if (Flame== LOW)
+  {
+    digitalWrite(buzzerPin, HIGH);
+    digitalWrite(redled, HIGH);
+    digitalWrite(greenled, LOW);
+    delay(500);  
+    if (Flame== LOW)
+    {
+      delay(5000);
+      digitalWrite(motorPin, HIGH);
+      Blynk.run();
+      timer.run();
+    }    
+  }
+  else
+  {
+    digitalWrite(buzzerPin, LOW);
+    digitalWrite(greenled, HIGH);
+    digitalWrite(redled, LOW);
+    digitalWrite(motorPin, LOW);
+  }
+}
