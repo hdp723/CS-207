@@ -1,0 +1,48 @@
+//Arduino Fire Extingushing System
+
+const int buzzerPin = 12;
+const int flamePin = 11;
+int Flame = HIGH;
+int redled = 6;
+int greenled = 5;
+int motorPin = 9;
+bool var;
+
+void setup() 
+{
+  pinMode(buzzerPin, OUTPUT);
+  pinMode(redled, OUTPUT);
+  pinMode(greenled, OUTPUT);
+  pinMode(motorPin, OUTPUT);
+  pinMode(flamePin, INPUT);
+  
+  Serial.begin(9600);
+}
+
+void loop() 
+{
+  Flame = digitalRead(flamePin);
+  // Flame pin initial reading is always high
+  if (Flame== LOW) 
+  {
+    var= true ;
+    
+    digitalWrite(buzzerPin, HIGH);
+    digitalWrite(redled, HIGH);
+    digitalWrite(greenled, LOW);
+    delay(1000);
+  }
+  
+   else if(var == true)
+    {
+      delay(5000);
+      digitalWrite(motorPin,HIGH);
+    }
+  
+  else
+  {
+    digitalWrite(buzzerPin, LOW);
+    digitalWrite(greenled, HIGH);
+    digitalWrite(redled, LOW);
+  }
+}
