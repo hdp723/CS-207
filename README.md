@@ -1,2 +1,0 @@
-CS 207
-HII THERE.
